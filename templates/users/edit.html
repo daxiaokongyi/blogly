@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    User Detail
+{% endblock %}
+
+{% block content %}
+    <h1>Edit an user</h1>
+    <form method="POST">
+        <label for="">First Name: </label>
+        <input type="text" value= {{user.first_name}} name="first" required>
+        <label for="">Last Name: </label>
+        <input type="text" value= {{user.last_name}}  name="last" required>
+        <label for="">Image URL: </label>
+        <input type="text" value= {{user.img_url}} name="image" required>
+        <a href="/">Cancel</a>
+        <button type="submit">Save</button>
+    </form>
+{% endblock %}
