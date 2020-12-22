@@ -32,15 +32,29 @@ class User(db.Model):
 class Post(db.Model):
     __tablename__ = 'posts'
 
-    id = db.Column(db.Integer, primary_key= True, autoincrement = True)
+    id = db.Column(db.Integer, primary_key = True, autoincrement = True, nullable = False)
     title = db.Column(db.String(50), nullable = False)
     content = db.Column(db.String(50), nullable = False)
     create_at = db.Column(db.DateTime, nullable = False, default = datetime.now())
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable = False)
+
+    # post_tag_relation = db.relationship('PostTag', backref = 'post')
+    tags = db.relationship('Tag', secondary = 'posts_tags', backref = 'posts')
 
     @property
     def friendly_time(self):
         """Get time"""
         return self.create_at.strftime("%a %b %-d  %Y, %-I:%M %p")
 
+class Tag(db.Model):
     
+    __tablename__ = "tags"
+
+    id = db.Column(db.Integer, primary_key = True, nullable = False)
+    name = db.Column(db.String(50), nullable = False, unique = True)
+    # post_tag_relation = db.relationship('PostTag', backref = 'tag')
+
+class PostTag(db.Model):
+    __tablename__ = "posts_tags"
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), primary_key = True)
+    tag_id = db.Column(db.Integer,  db.ForeignKey('tags.id'), primary_key = True)
