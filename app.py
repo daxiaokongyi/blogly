@@ -86,7 +86,7 @@ def save_edit(user_id):
     db.session.commit()
     return redirect(f'/users/{user.id}')
 
-@app.route('/users/<int:user_id>/delete')
+@app.route('/users/<int:user_id>/delete', methods = ['POST'])
 def delete_user(user_id):
     """Delete the current user"""
     user = User.query.get_or_404(user_id)
@@ -152,7 +152,7 @@ def save_post(post_id):
 
     return redirect(f'/posts/{post.id}')
 
-@app.route('/posts/<int:post_id>/delete')
+@app.route('/posts/<int:post_id>/delete', methods=['POST'])
 def delete_post(post_id):
     """Delete the current user"""
     post = Post.query.get_or_404(post_id)
@@ -222,7 +222,7 @@ def save_tag(tag_id):
     db.session.commit()
     return redirect('/tags')
 
-@app.route('/tags/<int:tag_id>/delete')
+@app.route('/tags/<int:tag_id>/delete', methods=['POST'])
 def delete_tag(tag_id):
     tag = Tag.query.get_or_404(tag_id)
     db.session.delete(tag)

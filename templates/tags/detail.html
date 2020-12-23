@@ -8,12 +8,15 @@
     <h1>{{tag.name}}</h1>
     <ul>
         {% for post in posts %}
-            <a href='/posts/{{post.id}}'>{{post.title}}</a>
+            <li><a href='/posts/{{post.id}}'>{{post.title}}</a></li>
         {% endfor %}
     </ul>
 
-    <a href="/tags/{{tag.id}}/edit">Edit</a>
-    <a href="/tags/{{tag.id}}/delete">Delete</a>
-    <a href="/tags">Back to Tags</a>    
+    <form>
+        <button class="btn btn-primary" formaction="/tags/{{tag.id}}/edit" formmethod="GET">Edit</button>
+        <button class="btn btn-danger" formaction="/tags/{{tag.id}}/delete" formmethod="POST">Delete</button>
+        <button class="btn btn-outline-primary"  formaction="/tags" formmethod="GET">Back to Tags</button>    
+    </form>
+
 {% endblock %}
 

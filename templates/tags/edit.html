@@ -7,20 +7,26 @@
 {% block content %}
     <h1>Edit a tag</h1>
     <form method="POST">
-        <label for="">Name: </label>
-        <input type="text" value= {{tag.name}} name="tag" required>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label d-flex align-items-center" for="">Name: </label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" value= {{tag.name}} name="tag" required>
+            </div>
+        </div>
 
-        {% for post in posts %} 
-            <input type="checkbox" name="posts" id="post_{{post.id}}" value="{{post.id}}" 
-                {% if post in tag.posts %}
-                    checked
-                {% endif %}
-            >
-            <label for="post_{{post.id}}">{{post.title}}</label>
-        {% endfor %}
-
-
-        <a href="/">Cancel</a>
-        <button type="submit">Save</button>
+        <div class="form-group row form-check">
+            {% for post in posts %}
+                <div>
+                    <input class = "form-input" type="checkbox" name="posts" id="post_{{post.id}}" value="{{post.id}}" 
+                    {% if post in tag.posts %}
+                        checked
+                    {% endif %}
+                    >
+                    <label for="post_{{post.id}}">{{post.title}}</label>
+                </div>
+            {% endfor %}
+        </div>
+        <a href="/" class="btn btn-info">Cancel</a>
+        <button class="btn btn-success" type="submit">Save</button>
     </form>
 {% endblock %}

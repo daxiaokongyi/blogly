@@ -7,13 +7,33 @@
 {% block content %}
     <h1>Create a user</h1>
     <form action="/users" method="POST">
-        <label for="">First Name: </label>
-        <input type="text" placeholder="Enter a first name" name="first">
-        <label for="">Last Name: </label>
-        <input type="text" placeholder="Enter a last name" name="last">
-        <label for="">Image URL: </label>
-        <input type="text" placeholder="Provide an image of this user" name="image">
-        <a href="/users">Cancel</a>
-        <button type="submit">Add</button>
+
+        <div class="form-group row">
+            <label for="first" class="col-sm-2 col-form-label">First Name: </label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" placeholder="Enter a first name" name="first">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="last" class="col-sm-2 col-form-label">Last Name: </label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" placeholder="Enter a last name" name="last">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="image" class="col-sm-2 col-form-label">Image URL: </label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" placeholder="Provide an image of this user" name="image">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="ml-auto mr-3">
+                <button class="btn btn-primary" href="/users">Cancel</button>
+                <button class="btn btn-success" type="submit">Add</button>
+            </div>
+        </div>
     </form>
 {% endblock %}

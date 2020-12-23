@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from app import app
-from models import db, User
+from models import db, User, Tag, PostTag, Post
 
 app.config['SQLALCHEMY_DATABASE_URL'] = 'postgresql:///user_test'
 app.config['SQLALCHEMY_ECHO'] = False
@@ -22,6 +22,8 @@ class UserViewsTestCase(TestCase):
         User.query.delete()
 
         user = User(first_name = 'Andres', last_name = 'Iniesta', img_url = 'https://i2-prod.birminghammail.co.uk/sport/football/football-news/article10417994.ece/ALTERNATES/s810/alex.jpg')
+        tag = Tag(name = 'Happy')
+
         db.session.add(user)
         db.session.commit()
 
@@ -45,7 +47,7 @@ class UserViewsTestCase(TestCase):
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('<li>Andres Iniesta</li>', html)
+            self.assertIn('<h1>Iniesta, Andres</h1>', html)
 
     def test_add_user(self):
         with app.test_client() as client:
@@ -54,10 +56,19 @@ class UserViewsTestCase(TestCase):
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('<li>Kaka Ko</li>', html)
+            self.assertIn('<h1>Ko, Kaka</h1>', html)
 
     def test_nonexisting_user(self):
         with app.test_client() as client:
             resp = client.get(f'/users/100', follow_redirects=True)
             html = resp.get_data(as_text=True)
             self.assertEqual(resp.status_code, 404)
+
+    def test_add_tag(self):
+        with app.test_client() as client:
+            d = {'tag': 'Happy'}
+            resp = client.post('/tags/new', data=d, follow_redirects=True)
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('<li><a href="/tags/1">Happy</a></li>', html)

@@ -7,13 +7,20 @@
 {% block content %}
     <h1> {{post.title}} </h1>
     <p>{{post.content}}</p>
-    By {{user.full_name}}
-    <a href="/users/{{user.id}}">Back to User</a>
-    <a href="/posts/{{post.id}}/edit">Edit</a>
-    <a href="/posts/{{post.id}}/delete">Delete</a>
-    <p>Tags:
-        {% for tag in tags %}
-            <a href="/tags/{{tag.id}}">{{tag.name}} </a>
-        {% endfor%}
-    </p>
+    <p><i>By {{user.full_name}} on {{post.friendly_time}}</i></p>
+
+    {% if post.tags %}
+        <p>
+            <b>Tags:</b>
+            {% for tag in tags %}
+                <a href="/tags/{{tag.id}}"><i class="badge badge-primary"></i>{{tag.name}} </a>
+            {% endfor%}
+        </p>
+    {% endif %}
+
+    <form>
+        <button class="btn btn-outline-primary" formaction="/users/{{user.id}}" formmethod="GET">Back to User</button>
+        <button class="btn btn-primary" formaction="/posts/{{post.id}}/edit" formmethod="GET">Edit</button>
+        <button class="btn btn-danger" formaction="/posts/{{post.id}}/delete" formmethod="POST">Delete</button>
+    </form>
 {% endblock %}
