@@ -101,14 +101,15 @@ def title_detail(post_id):
     """Show all the posts"""
     post = Post.query.get_or_404(post_id)
     user = post.user
-
-    return render_template('posts/detail.html', post = post, user = user)
+    tags = post.tags
+    return render_template('posts/detail.html', post = post, user = user, tags = tags)
 
 @app.route('/users/<int:user_id>/posts/new')
 def add_post(user_id):
     """Add a new post"""
     user = User.query.get_or_404(user_id)
-    return render_template('posts/create.html', user = user)
+    tags = Tag.query.all()
+    return render_template('posts/create.html', user = user, tags = tags)
 
 @app.route('/users/<int:user_id>/posts/new', methods=['POST'])
 def post_detail(user_id):
@@ -116,12 +117,14 @@ def post_detail(user_id):
     title = request.form.get('title')
     content = request.form.get('content')
     user = User.query.get_or_404(user_id)
+    tags_ids = [int(id) for id in request.form.getlist('tags')]
+    tags = Tag.query.filter(Tag.id.in_(tags_ids)).all()
 
     if ((title == '') or (content == '') or (user == '')):
         flash('Please fill out the missing part.', 'err')
         return redirect(f'/users/{user_id}/posts/new')
 
-    new_post = Post(title = title, content = content, user = user)
+    new_post = Post(title = title, content = content, user = user, tags = tags)
     db.session.add(new_post)
     db.session.commit()
 
@@ -130,15 +133,19 @@ def post_detail(user_id):
 @app.route('/posts/<int:post_id>/edit')
 def edit_post(post_id):
     post = Post.query.get_or_404(post_id)
+    tags = Tag.query.all()
 
-    return render_template('posts/edit.html', post = post)
+    return render_template('posts/edit.html', post = post, tags = tags)
 
 @app.route('/posts/<int:post_id>/edit', methods = ['Post'])
 def save_post(post_id):
     post = Post.query.get_or_404(post_id)
+    tag_ids = [int(id) for id in request.form.getlist('tags')]
+    tags = Tag.query.filter(Tag.id.in_(tag_ids)).all()
 
     post.title = request.form.get('title')   
     post.content = request.form.get('content')
+    post.tags = tags
 
     db.session.add(post)
     db.session.commit()
@@ -152,3 +159,73 @@ def delete_post(post_id):
     db.session.delete(post)
     db.session.commit()
     return redirect(f'/users/{post.user_id}')
+
+# Tag
+@app.route('/tags')
+def show_tags():
+    """Show the list of tags"""
+    tags = Tag.query.all()
+    return render_template('/tags/list.html', tags = tags)
+
+@app.route('/tags/<int:tag_id>')
+def tag_detail(tag_id):
+    """Show the detail of a tag"""
+    tag = Tag.query.get_or_404(tag_id)
+    # raise
+    posts = tag.posts
+    return render_template('/tags/detail.html', tag = tag, posts = posts)
+    
+@app.route('/tags/new')
+def add_tag():
+    """Create a tag"""
+    posts = Post.query.all()
+    return render_template('tags/create.html', posts = posts)
+
+@app.route('/tags/new', methods = ['POST'])
+def new_tag():
+    """Get new tags"""
+    tag_name = request.form.get('tag')
+    
+    if (tag_name == ''):
+        flash('Please fill out the missing part.', 'err')
+        return redirect(url_for('add_tag'))
+
+    post_ids = [int(id) for id in request.form.getlist('posts')]
+    posts = Post.query.filter(Post.id.in_(post_ids)).all()
+
+    tag = Tag(name = tag_name)
+    tag.posts = posts
+
+    db.session.add(tag)
+    db.session.commit()
+    return redirect('/tags')
+
+@app.route('/tags/<int:tag_id>/edit')
+def edit_tag(tag_id):
+    """Edit a tag"""
+    tag = Tag.query.get_or_404(tag_id)
+    posts = Post.query.all()
+    return render_template('/tags/edit.html', tag = tag, posts = posts)
+
+@app.route('/tags/<int:tag_id>/edit', methods=['POST'])
+def save_tag(tag_id):
+    """save a tag"""
+    tag = Tag.query.get_or_404(tag_id)
+
+    post_ids = [int(id) for id in request.form.getlist('posts')]
+    posts = Post.query.filter(Post.id.in_(post_ids)).all()
+
+    tag.name = request.form.get('tag')
+    tag.posts = posts
+
+    db.session.add(tag)
+    db.session.commit()
+    return redirect('/tags')
+
+@app.route('/tags/<int:tag_id>/delete')
+def delete_tag(tag_id):
+    tag = Tag.query.get_or_404(tag_id)
+    db.session.delete(tag)
+    db.session.commit()
+    return redirect('/tags')
+

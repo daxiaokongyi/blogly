@@ -11,4 +11,9 @@
     <a href="/users/{{user.id}}">Back to User</a>
     <a href="/posts/{{post.id}}/edit">Edit</a>
     <a href="/posts/{{post.id}}/delete">Delete</a>
+    <p>Tags:
+        {% for tag in tags %}
+            <a href="/tags/{{tag.id}}">{{tag.name}} </a>
+        {% endfor%}
+    </p>
 {% endblock %}
